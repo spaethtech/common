@@ -38,12 +38,7 @@
     },
     "bin": [
         "bin/phpdoc-md"
-    ],
-    "scripts": {
-        "document": [
-            "\\SpaethTech\\Common\\Documentation::generate"
-        ]
-    }
+    ]
 
 
 
