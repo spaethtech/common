@@ -41,7 +41,10 @@
     ],
     "scripts": {
         "document": [
-            "\\MVQN\\Common\\Documentation::generate"
+            "\\SpaethTech\\Common\\Documentation::generate"
+        ],
+        "post-update-cmd": [
+            "\\SpaethTech\\Composer\\Scripts\\Terminal::postUpdate"
         ]
     }
 
