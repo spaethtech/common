@@ -1,6 +1,6 @@
 {
     "name": "spaethtech/common",
-    "description": "A library of common classes and functions, specifically designed for use in my own projects!",
+    "description": "A library of common classes and functions.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -25,24 +25,21 @@
     },
     "autoload": {
         "psr-4": {
-            "MVQN\\": "./src/"
+            "SpaethTech\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MVQN\\": "./tests/"
+            "SpaethTech\\": "tests/"
         }
     },
     "bin": [
-        "./bin/phpdoc-md"
+        "bin/phpdoc-md"
     ],
     "scripts": {
-
         "document": [
             "\\MVQN\\Common\\Documentation::generate"
         ]
-
-
     }
 
 

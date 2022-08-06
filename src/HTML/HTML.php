@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace MVQN\HTML;
+namespace SpaethTech\HTML;
 
 
 
-use MVQN\HTML\Indenter;
+use SpaethTech\HTML\Indenter;
 
 final class HTML
 {

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace MVQN\Common;
+namespace SpaethTech\Common;
 
-use MVQN\Common\Exceptions\ArrayTraversalException;
+use SpaethTech\Common\Exceptions\ArrayTraversalException;
 
 class ArrayIndexer
 {

@@ -7,10 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PatternsTests extends TestCase
 {
-
-
-
-    public function testIsArrayFromAssociativeArrayString()
+   public function testIsArrayFromAssociativeArrayString()
     {
         $valid      = "[ 'key' => 'value' ]";
         $test       = Patterns::isArray($valid);

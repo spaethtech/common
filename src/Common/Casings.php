@@ -1,12 +1,12 @@
 <?php /** @noinspection PhpUnused */
 declare(strict_types=1);
 
-namespace MVQN\Common;
+namespace SpaethTech\Common;
 
 /**
  * A collection of helper functions to convert between some common string casings.
  *
- * @package MVQN\Common
+ * @package SpaethTech\Common
  */
 final class Casings
 {

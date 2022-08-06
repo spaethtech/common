@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MVQN\Common\Exceptions;
+namespace SpaethTech\Common\Exceptions;
 
 use Exception;
 

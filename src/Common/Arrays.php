@@ -1,16 +1,16 @@
 <?php /** @noinspection PhpUnused */
 declare(strict_types=1);
 
-namespace MVQN\Common;
+namespace SpaethTech\Common;
 
 use Exception;
-use MVQN\Common\Exceptions\ArrayTraversalException;
+use SpaethTech\Common\Exceptions\ArrayTraversalException;
 
 /**
  * Class Arrays
  *
- * @package MVQN\Common
- * @author Ryan Spaeth <rspaeth@mvqn.net>
+ * @package SpaethTech\Common
+ * @author Ryan Spaeth <rspaeth@SpaethTech.net>
  * @final
  */
 final class Arrays
@@ -35,7 +35,7 @@ final class Arrays
                     break;
 
                 default:
-                    throw new Exception("[MVQN\Common\ArrayX::combineResults()] Unsupported MODE: '$mode'");
+                    throw new Exception("[SpaethTech\Common\ArrayX::combineResults()] Unsupported MODE: '$mode'");
             }
 
         }
@@ -68,7 +68,7 @@ final class Arrays
         foreach ($steps as $step)
         {
             if (!is_array($current) || !array_key_exists($step, $current))
-                throw new Exception("[MVQN\Common\Arrays] Could not traverse the path '$path' in ".
+                throw new Exception("[SpaethTech\Common\Arrays] Could not traverse the path '$path' in ".
                     print_r($array, true)."!");
 
             $current = $current[$step];

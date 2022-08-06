@@ -1,7 +1,7 @@
 <?php /** @noinspection PhpUnused */
 declare(strict_types=1);
 
-namespace MVQN\Common;
+namespace SpaethTech\Common;
 
 
 use Exception;
@@ -9,8 +9,8 @@ use Exception;
 /**
  * Class Patterns
  *
- * @package MVQN\Common
- * @author Ryan Spaeth <rspaeth@mvqn.net>
+ * @package SpaethTech\Common
+ * @author Ryan Spaeth <rspaeth@SpaethTech.net>
  * @final
  */
 final class Patterns
@@ -96,10 +96,10 @@ final class Patterns
             return "";
 
         if ($token === null || $token === "")
-            throw new Exception("[MVQN\Common\Patterns] A TOKEN must be provided to pattern match!");
+            throw new Exception("[SpaethTech\Common\Patterns] A TOKEN must be provided to pattern match!");
 
         if (strpos($pattern, " ") !== false)
-            throw new Exception("[MVQN\Common\Patterns] The \$pattern must not contain any spaces!");
+            throw new Exception("[SpaethTech\Common\Patterns] The \$pattern must not contain any spaces!");
 
         $segments = [];
 
@@ -114,7 +114,7 @@ final class Patterns
             foreach($parts as $part)
             {
                 if($part === "" && $counter !== 0)
-                    throw new Exception("[MVQN\Common\Patterns] The \$pattern must be in a valid URL format.");
+                    throw new Exception("[SpaethTech\Common\Patterns] The \$pattern must be in a valid URL format.");
 
                 if (strpos($part, $token) !== 0)
                 {
@@ -126,7 +126,7 @@ final class Patterns
                 $part = substr($part, 1, strlen($part) - 1);
 
                 if(!array_key_exists($part, $params))
-                    throw new Exception("[MVQN\Common\Patterns] Parameter '$part' was not found in \$params!");
+                    throw new Exception("[SpaethTech\Common\Patterns] Parameter '$part' was not found in \$params!");
 
                 $segments[] = $params[$part];
 

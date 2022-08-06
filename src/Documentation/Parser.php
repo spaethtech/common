@@ -1,6 +1,6 @@
 <?php
 
-namespace MVQN\Documentation;
+namespace SpaethTech\Documentation;
 
 use SimpleXMLElement;
 

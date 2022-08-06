@@ -1,6 +1,6 @@
 <?php
 
-namespace MVQN\Documentation;
+namespace SpaethTech\Documentation;
 
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -85,8 +85,8 @@ class Generator
 
         $twig = new Twig_Environment($loader);
 
-        $GLOBALS['MVQN_Documentation_classDefinitions'] = $this->classDefinitions;
-        $GLOBALS['MVQN_Documentation_linkTemplate'] = $this->linkTemplate;
+        $GLOBALS['SpaethTech_Documentation_classDefinitions'] = $this->classDefinitions;
+        $GLOBALS['SpaethTech_Documentation_linkTemplate'] = $this->linkTemplate;
 
         $filter = new Twig_SimpleFilter('classLink', ['rspaeth\\Documentation\\Generator', 'classLink']);
         $twig->addFilter($filter);
@@ -175,8 +175,8 @@ class Generator
      */
     static function classLink($className, $label = null)
     {
-        $classDefinitions = $GLOBALS['MVQN_Documentation_classDefinitions'];
-        $linkTemplate = $GLOBALS['MVQN_Documentation_linkTemplate'];
+        $classDefinitions = $GLOBALS['SpaethTech_Documentation_classDefinitions'];
+        $linkTemplate = $GLOBALS['SpaethTech_Documentation_linkTemplate'];
 
         $returnedClasses = [];
 
