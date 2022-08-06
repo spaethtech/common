@@ -24,6 +24,9 @@
         "twig/twig": "^2.11"
     },
     "autoload": {
+        "files": [
+            "inc/globals.inc.php"
+        ],
         "psr-4": {
             "SpaethTech\\": "src/"
         }
