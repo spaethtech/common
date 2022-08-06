@@ -42,9 +42,6 @@
     "scripts": {
         "document": [
             "\\SpaethTech\\Common\\Documentation::generate"
-        ],
-        "post-update-cmd": [
-            "\\SpaethTech\\Composer\\Scripts\\Terminal::postUpdate"
         ]
     }
 

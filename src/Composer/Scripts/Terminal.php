@@ -21,7 +21,8 @@ class Terminal
 
         //$event->getIO()->write(PROJECT_DIR, TRUE);
         if (($ide = realpath(__DIR__."/../../../ide")) && $ide !== PROJECT_DIR)
-            FileSystem::copyDir(__DIR__."/../../../ide", PROJECT_DIR."/ide", TRUE);
+            //FileSystem::copyDir(__DIR__."/../../../ide", PROJECT_DIR."/ide", TRUE);
+            $event->getIO()->write(PROJECT_DIR, TRUE);
 
     }
 
