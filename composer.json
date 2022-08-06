@@ -1,0 +1,50 @@
+{
+    "name": "spaethtech/common",
+    "description": "A library of common classes and functions, specifically designed for use in my own projects!",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryan Spaeth",
+            "email": "rspaeth@mvqn.net"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "ext-dom": "*",
+        "ext-libxml": "*",
+        "ext-mbstring": "*",
+        "ext-simplexml": "*",
+
+        "composer/composer": "^1.9",
+        "phpunit/phpunit": "~9",
+        "twig/twig": "^2.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "MVQN\\": "./src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MVQN\\": "./tests/"
+        }
+    },
+    "bin": [
+        "./bin/phpdoc-md"
+    ],
+    "scripts": {
+
+        "document": [
+            "\\MVQN\\Common\\Documentation::generate"
+        ]
+
+
+    }
+
+
+
+}
