@@ -31,7 +31,7 @@ final class FileSystem
 
     public static function uri(string $path): string
     {
-        return "file://".(DIRECTORY_SEPARATOR === "\\" ? "/" : "").self::path($path, "/");
+        return "file://" . (DIRECTORY_SEPARATOR === "\\" ? "/" : "") . self::path($path, "/");
     }
 
 
@@ -65,8 +65,7 @@ final class FileSystem
         $delay = intval($delay * 100000);
         $elapsed = 0;
 
-        while(file_exists($path) && $elapsed < $timeout)
-        {
+        while (file_exists($path) && $elapsed < $timeout) {
             if (@unlink($path) || !file_exists($path))
                 break;
 
@@ -95,8 +94,7 @@ final class FileSystem
         $delay = intval($delay * 100000);
         $elapsed = 0;
 
-        while(file_exists($path) && $elapsed < $timeout)
-        {
+        while (file_exists($path) && $elapsed < $timeout) {
             if (@rmdir($path) || !file_exists($path))
                 break;
 
@@ -130,8 +128,7 @@ final class FileSystem
 
         $dir = self::path($dir);
 
-        if (!self::$deleteBase)
-        {
+        if (!self::$deleteBase) {
             if (!is_dir($dir))
                 return FALSE;
 
@@ -141,8 +138,7 @@ final class FileSystem
             self::$deleteBase = $dir;
         }
 
-        foreach (array_diff(scandir($dir), array('.', '..')) as $file)
-        {
+        foreach (array_diff(scandir($dir), array('.', '..')) as $file) {
             $path = self::path("$dir/$file");
             $relative = ltrim(str_replace(self::$deleteBase, "", $path), DIRECTORY_SEPARATOR);
 
@@ -151,8 +147,7 @@ final class FileSystem
 
             if (is_dir($path) && !is_link($path))
                 self::rmdir($path, $exclusions, $verbose, $counts);
-            else
-            {
+            else {
                 if ($verbose)
                     print_r("Deleted: $path\n");
 
@@ -162,18 +157,14 @@ final class FileSystem
         }
 
         // IF the current directory is the root, THEN return TRUE and keep the directory, OTHERWISE remove it
-        if ($dir !== self::$deleteBase)
-        {
+        if ($dir !== self::$deleteBase) {
             $counts["folders"] += 1;
             //return self::rmdirRetry($dir);
             //exec("rmdir /s /q $dir");
             //return TRUE;
             return self::execRemoveDirRecursive($dir);
-        }
-        else
-        {
-            if ($verbose)
-            {
+        } else {
+            if ($verbose) {
                 $f = $counts["files"] !== 1 ? "files" : "file";
                 $d = $counts["folders"] !== 1 ? "folders" : "folder";
 
@@ -191,7 +182,7 @@ final class FileSystem
      * @return array
      * @noinspection PhpUnused
      */
-    public static function loadJson(string $path) : array
+    public static function loadJson(string $path): array
     {
         if (!file_exists($path))
             return [];
@@ -213,7 +204,7 @@ final class FileSystem
      * @return bool
      * @noinspection PhpUnused
      */
-    public static function saveJson(string $path, array $content, int $options = JSON_PRETTY_PRINT) : bool
+    public static function saveJson(string $path, array $content, int $options = JSON_PRETTY_PRINT): bool
     {
         if (($json = json_encode($content, $options)) === FALSE)
             return FALSE;
@@ -238,8 +229,7 @@ final class FileSystem
     public static function scan(string $dir, string $separator = DIRECTORY_SEPARATOR, bool $absolute = FALSE): array
     {
         $result = [];
-        foreach(scandir($dir) as $file)
-        {
+        foreach (scandir($dir) as $file) {
             if ($file === "." || $file === "..")
                 continue;
 
@@ -247,7 +237,7 @@ final class FileSystem
 
             if (is_dir($filePath)) {
                 foreach (self::scan($filePath, $separator) as $childFilename) {
-                    $result[] = ($absolute ? $dir . $separator : ""). $file . $separator . $childFilename;
+                    $result[] = ($absolute ? $dir . $separator : "") . $file . $separator . $childFilename;
                 }
             } else {
                 $result[] = ($absolute ? $dir . $separator : "") . $file;
@@ -266,11 +256,11 @@ final class FileSystem
      */
     public static function each(string $dir, callable $func = NULL, string $separator = DIRECTORY_SEPARATOR, bool $absolute = FALSE): array
     {
-        $func = $func ?? function(string $file): string { return $file; };
+        $func = $func ?? function (string $file): string {
+            return $file; };
 
         $result = [];
-        foreach(scandir($dir) as $file)
-        {
+        foreach (scandir($dir) as $file) {
             if ($file === "." || $file === "..")
                 continue;
 
@@ -313,18 +303,17 @@ final class FileSystem
         if (!is_dir($destination) && !mkdir($destination))
             return FALSE;
 
-        $files = self::each($source,
-            function($file) use ($source, $destination, $verbose, &$counts)
-            {
+        $files = self::each(
+            $source,
+            function ($file) use ($source, $destination, $verbose, &$counts) {
                 $s = $source . DIRECTORY_SEPARATOR . $file;
                 $d = $destination . DIRECTORY_SEPARATOR . $file;
 
-                if (!file_exists(dirname($d)))
-                {
+                if (!file_exists(dirname($d))) {
                     if (mkdir(dirname($d)))
                         $counts["folders"] += 1;
                     else
-                        die("Could not create directory: ". dirname($d));
+                        die("Could not create directory: " . dirname($d));
                 }
 
                 copy($s, $d);
@@ -337,8 +326,7 @@ final class FileSystem
             }
         );
 
-        if ($verbose)
-        {
+        if ($verbose) {
             $f = $counts["files"] !== 1 ? "files" : "file";
             $d = $counts["folders"] !== 1 ? "folders" : "folder";
             print_r("{$counts['files']} $f copied and {$counts['folders']} $d created!\n");
@@ -360,7 +348,7 @@ final class FileSystem
         $output = exec("git clone $url $dir");
 
         if ($verbose)
-            print_r($output."\n");
+            print_r($output . "\n");
 
         if (!$degit)
             self::execRemoveDirRecursive(self::path("$dir/.git/"));

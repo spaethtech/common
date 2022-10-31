@@ -10,7 +10,7 @@ final class Strings
     {
         $pos = strrpos($subject, $search);
 
-        if($pos !== false)
+        if ($pos !== false)
             $subject = substr_replace($subject, $replace, $pos, strlen($search));
 
         return $subject;
@@ -34,7 +34,7 @@ final class Strings
      */
     public static function startsWithUpper(?string $haystack): bool
     {
-        return $haystack !== null && (preg_match('/[A-Z]$/',$haystack{0}) == true);
+        return $haystack !== null && (preg_match('/[A-Z]$/', $haystack{ 0}) == true);
     }
 
     /**
@@ -59,5 +59,9 @@ final class Strings
         return $haystack !== null && ($length == 0 ? true : (substr($haystack, -$length) === $needle));
     }
 
-}
+    public static function isNullOrEmpty(?string $haystack): bool
+    {
+        return ($haystack === null || trim($haystack) === "");
+    }
 
+}

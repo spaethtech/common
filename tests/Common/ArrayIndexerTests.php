@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace MVQN\Common;
+namespace SpaethTech\Common;
 
-use MVQN\Common\Exceptions\ArrayTraversalException;
+use SpaethTech\Common\Exceptions\ArrayTraversalException;
 use PHPUnit\Framework\TestCase;
 
 final class ArrayIndexerTests extends TestCase
@@ -17,7 +17,7 @@ final class ArrayIndexerTests extends TestCase
         $this->sample = [
 
             "author" => "Ryan Spaeth",
-            "email" => "rspaeth@mvqn.net",
+            "email" => "rspaeth@spaethtech.com",
 
             "dev" => [
                 "version" => "1.0.0-beta1",
@@ -78,11 +78,11 @@ final class ArrayIndexerTests extends TestCase
     {
         $indexer = new ArrayIndexer($this->sample);
         $indexer->setByDotNotation("author.name", "Ryan Spaeth");
-        $indexer->setByDotNotation("author.email", "rspaeth@mvqn.net");
+        $indexer->setByDotNotation("author.email", "rspaeth@spaethtech.com");
 
         $this->sample = $indexer->toArray();
 
-        $this->assertEquals([ "name" => "Ryan Spaeth", "email" => "rspaeth@mvqn.net" ], $this->sample["author"]);
+        $this->assertEquals([ "name" => "Ryan Spaeth", "email" => "rspaeth@spaethtech.com" ], $this->sample["author"]);
     }
 
     #endregion

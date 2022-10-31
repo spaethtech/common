@@ -59,7 +59,7 @@ if (isset($positional[1])) {
     $outputDir = $positional[1];
 }
 
-$parser = new MVQN\Documentation\Parser($input);
+$parser = new SpaethTech\Documentation\Parser($input);
 
 echo "Parsing structure.xml\n";
 
@@ -67,7 +67,7 @@ $classDefinitions = $parser->run();
 
 $templateDir = __DIR__ . "/../src/rspaeth/Documentation/templates/";
 
-$generator = new MVQN\Documentation\Generator(
+$generator = new SpaethTech\Documentation\Generator(
     $classDefinitions,
     $outputDir,
     $templateDir,
