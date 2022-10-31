@@ -34,7 +34,7 @@ final class Strings
      */
     public static function startsWithUpper(?string $haystack): bool
     {
-        return $haystack !== null && (preg_match('/[A-Z]$/', $haystack{ 0}) == true);
+        return $haystack !== null && (preg_match('/[A-Z]$/', $haystack[0]) == true);
     }
 
     /**
