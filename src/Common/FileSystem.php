@@ -118,7 +118,7 @@ final class FileSystem
      *
      * @return bool Returns TRUE on success (or if the $dir is non-existent), or FALSE on failure.
      */
-    public static function rmdir(string $dir, array $exclusions = [], bool $verbose = FALSE, array &$counts = []): bool
+    public static function rmdir(string $dir, bool $includeSelf = false, array $exclusions = [], bool $verbose = FALSE, array &$counts = []): bool
     {
         if (!array_key_exists("files", $counts))
             $counts["files"] = 0;
@@ -146,7 +146,7 @@ final class FileSystem
                 continue;
 
             if (is_dir($path) && !is_link($path))
-                self::rmdir($path, $exclusions, $verbose, $counts);
+                self::rmdir($path, $includeSelf, $exclusions, $verbose, $counts);
             else {
                 if ($verbose)
                     print_r("Deleted: $path\n");
@@ -169,6 +169,11 @@ final class FileSystem
                 $d = $counts["folders"] !== 1 ? "folders" : "folder";
 
                 print_r("{$counts['files']} $f deleted and {$counts['folders']} $d removed!\n");
+            }
+
+            if ($includeSelf) {
+                rmdir(self::$deleteBase);
+                //self::$deleteBase = "";
             }
 
             return TRUE;
@@ -257,7 +262,8 @@ final class FileSystem
     public static function each(string $dir, callable $func = NULL, string $separator = DIRECTORY_SEPARATOR, bool $absolute = FALSE): array
     {
         $func = $func ?? function (string $file): string {
-            return $file; };
+            return $file;
+        };
 
         $result = [];
         foreach (scandir($dir) as $file) {
