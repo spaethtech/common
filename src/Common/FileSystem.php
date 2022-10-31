@@ -11,6 +11,14 @@ namespace SpaethTech\Common;
  */
 final class FileSystem
 {
+    private static bool $verbose = false;
+
+    public static function setVerbose(bool $verbose = true)
+    {
+        self::$verbose = $verbose;
+    }
+
+
     private static function onWindows(): bool
     {
         return strtoupper(substr(PHP_OS, 0, 3)) === "WIN";
@@ -113,12 +121,11 @@ final class FileSystem
      *
      * @param string $dir The directory upon which to act.
      * @param array $exclusions An optional array of exclusions, relative to $dir.
-     * @param bool $verbose
      * @param array $counts
      *
      * @return bool Returns TRUE on success (or if the $dir is non-existent), or FALSE on failure.
      */
-    public static function rmdir(string $dir, bool $includeSelf = false, array $exclusions = [], bool $verbose = FALSE, array &$counts = []): bool
+    public static function rmdir(string $dir, bool $inclusive = true, array $exclusions = [], array &$counts = []): bool
     {
         if (!array_key_exists("files", $counts))
             $counts["files"] = 0;
@@ -146,9 +153,9 @@ final class FileSystem
                 continue;
 
             if (is_dir($path) && !is_link($path))
-                self::rmdir($path, $includeSelf, $exclusions, $verbose, $counts);
+                self::rmdir($path, $inclusive, $exclusions, $counts);
             else {
-                if ($verbose)
+                if (self::$verbose)
                     print_r("Deleted: $path\n");
 
                 //$count += unlink($path) ? 1 : 0;
@@ -164,14 +171,14 @@ final class FileSystem
             //return TRUE;
             return self::execRemoveDirRecursive($dir);
         } else {
-            if ($verbose) {
+            if (self::$verbose) {
                 $f = $counts["files"] !== 1 ? "files" : "file";
                 $d = $counts["folders"] !== 1 ? "folders" : "folder";
 
                 print_r("{$counts['files']} $f deleted and {$counts['folders']} $d removed!\n");
             }
 
-            if ($includeSelf) {
+            if ($inclusive) {
                 rmdir(self::$deleteBase);
                 //self::$deleteBase = "";
             }
@@ -287,12 +294,11 @@ final class FileSystem
      * @param string $source
      * @param string $destination
      * @param bool $replace
-     * @param bool $verbose
      * @param array $counts
      *
      * @return false|array
      */
-    public static function copyDir(string $source, string $destination, bool $replace = FALSE, bool $verbose = FALSE, array &$counts = [])
+    public static function copyDir(string $source, string $destination, bool $replace = FALSE, array &$counts = [])
     {
         if (!array_key_exists("files", $counts))
             $counts["files"] = 0;
@@ -311,7 +317,7 @@ final class FileSystem
 
         $files = self::each(
             $source,
-            function ($file) use ($source, $destination, $verbose, &$counts) {
+            function ($file) use ($source, $destination, &$counts) {
                 $s = $source . DIRECTORY_SEPARATOR . $file;
                 $d = $destination . DIRECTORY_SEPARATOR . $file;
 
@@ -325,14 +331,14 @@ final class FileSystem
                 copy($s, $d);
                 $counts["files"] += 1;
 
-                if ($verbose)
+                if (self::$verbose)
                     print_r("Copied: $s\n");
 
                 return $file;
             }
         );
 
-        if ($verbose) {
+        if (self::$verbose) {
             $f = $counts["files"] !== 1 ? "files" : "file";
             $d = $counts["folders"] !== 1 ? "folders" : "folder";
             print_r("{$counts['files']} $f copied and {$counts['folders']} $d created!\n");
@@ -345,15 +351,14 @@ final class FileSystem
      * @param string $url
      * @param string $dir
      * @param bool $degit
-     * @param bool $verbose
      *
      * @return void
      */
-    public static function gitClone(string $url, string $dir, bool $degit = FALSE, bool $verbose = FALSE)
+    public static function gitClone(string $url, string $dir, bool $degit = FALSE)
     {
         $output = exec("git clone $url $dir");
 
-        if ($verbose)
+        if (self::$verbose)
             print_r($output . "\n");
 
         if (!$degit)
