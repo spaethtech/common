@@ -5,6 +5,7 @@ namespace SpaethTech\Common;
 
 
 use Exception;
+use ParseError;
 
 /**
  * Class Patterns
@@ -15,12 +16,12 @@ use Exception;
  */
 final class Patterns
 {
-
+    
     private const PATTERN_JSON    = "/(\{.*\})/";
     private const PATTERN_ARRAY   = "/(\[.*\])/";
     //private const PATTERN_EVAL    = "/(\`.*\`)/";
-
-
+    
+    
     /**
      * Checks to see whether or not the provided string value is a JSON literal and optionally mutates the literal value
      * to an associative array from the decoded JSON.
@@ -33,21 +34,24 @@ final class Patterns
     public static function isJSON(string &$value = null, bool $mutate = true): bool
     {
         $result = preg_match(self::PATTERN_JSON, $value) == true;
-
+        
         $json = null;
-
+        
         if($result)
         {
             $json = json_decode($value, true);
-
+            
+            if (json_last_error() !== JSON_ERROR_NONE)
+                return false;
+            
             if($mutate && $json !== null)
                 $value = $json;
         }
-
-
+        
+        
         return $json !== null && $result;
     }
-
+    
     /**
      * Checks to see whether or not the provided string value is a PHP array literal and optionally mutates the literal
      * value to an actual array.
@@ -63,25 +67,34 @@ final class Patterns
     public static function isArray(string &$value = null, bool $mutate = true): bool
     {
         $result = preg_match(self::PATTERN_ARRAY, $value) == true;
-
+        
         $array = null;
-
+        
         if($result)
         {
-            $array = eval("return {$value};");
-
+            try
+            {
+                $array = eval("return {$value};");
+                
+            }
+            catch(Exception|ParseError $e)
+            {
+                return false;
+            }
+    
+    
             if($mutate && $array !== null)
                 $value = $array;
         }
-
+        
         return $array !== null && $result;
     }
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
     /**
      * @param string $pattern
      * @param array $params
@@ -91,57 +104,57 @@ final class Patterns
      */
     public static function interpolateUrl(string $pattern, array $params, string $token = ":"): string
     {
-
+        
         if ($pattern === null || $pattern === "")
             return "";
-
+        
         if ($token === null || $token === "")
             throw new Exception("[SpaethTech\Common\Patterns] A TOKEN must be provided to pattern match!");
-
+        
         if (strpos($pattern, " ") !== false)
             throw new Exception("[SpaethTech\Common\Patterns] The \$pattern must not contain any spaces!");
-
+        
         $segments = [];
-
+        
         if (strpos($pattern, $token) !== false)
         {
             $parts = explode("/", $pattern);
-
+            
             //print_r($parts);
-
+            
             $counter = 0;
-
+            
             foreach($parts as $part)
             {
                 if($part === "" && $counter !== 0)
                     throw new Exception("[SpaethTech\Common\Patterns] The \$pattern must be in a valid URL format.");
-
+                
                 if (strpos($part, $token) !== 0)
                 {
                     $segments[] = $part;
                     $counter++;
                     continue;
                 }
-
+                
                 $part = substr($part, 1, strlen($part) - 1);
-
+                
                 if(!array_key_exists($part, $params))
                     throw new Exception("[SpaethTech\Common\Patterns] Parameter '$part' was not found in \$params!");
-
+                
                 $segments[] = $params[$part];
-
+                
                 $counter++;
             }
-
+            
             return implode("/", $segments);
         }
         else
         {
             return $pattern;
         }
-
-
+        
+        
     }
-
-
+    
+    
 }
