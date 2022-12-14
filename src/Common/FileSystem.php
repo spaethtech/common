@@ -115,11 +115,12 @@ final class FileSystem
 
     /** @var string The base path to use when starting recursion and from which to build relative paths. */
     private static string $deleteBase = "";
-
+    
     /**
      * Deletes all content from a directory (recursively).
      *
      * @param string $dir The directory upon which to act.
+     * @param bool $inclusive
      * @param array $exclusions An optional array of exclusions, relative to $dir.
      * @param array $counts
      *

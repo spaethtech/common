@@ -1,5 +1,6 @@
 <?php /** @noinspection PhpUnused */
 declare(strict_types=1);
+
 namespace SpaethTech\Common;
 
 use Composer\Script\Event;

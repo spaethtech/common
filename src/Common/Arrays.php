@@ -17,8 +17,11 @@ final class Arrays
 {
     public const COMBINE_MODE_OVERWRITE  = 1;
     public const COMBINE_MODE_MERGE      = 2;
-
-
+    
+    
+    /**
+     * @throws Exception
+     */
     public static function combineResults(
         array $array, string $name, $value, int $mode = self::COMBINE_MODE_OVERWRITE): array
     {
@@ -31,7 +34,8 @@ final class Arrays
                     break;
 
                 case self::COMBINE_MODE_MERGE:
-                    $array[$name] = array_merge($array[$name], is_array($value) ? $value : [$value]);
+                    //$array[$name] = array_merge($array[$name], is_array($value) ? $value : [$value]);
+                    $array[$name] = array_merge($array[$name], $value);
                     break;
 
                 default:
@@ -83,7 +87,7 @@ final class Arrays
      * @param array $array The array for which to traverse.
      * @param string $path The path to use during traversal.
      * @param string $delimiter The delimiter to use when parsing the path, defaults to "/"
-     * @param bool $exception Determines whether or not to throw an Exception on a non-existent path, defaults to TRUE.
+     * @param bool $exception Determines whether to throw an Exception on a non-existent path, defaults to TRUE.
      * @param null $default The value to return on a non-existent path when Exceptions are FALSE, defaults to NULL.
      * @return mixed Returns the value at the successfully traversed index.
      * @throws ArrayTraversalException
@@ -123,7 +127,7 @@ final class Arrays
      * @param mixed|null $value An optional value that makes this function behave as a setter rather than a getter.
      * @return array|mixed Returns the
      */
-    public static function path(array &$array, string $path, $delimiter = "/", &$value = null)
+    public static function path(array &$array, string $path, string $delimiter = "/", /* & */ $value = null)
     {
         $path = explode($delimiter, $path);
 

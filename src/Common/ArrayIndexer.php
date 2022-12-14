@@ -7,7 +7,7 @@ use SpaethTech\Common\Exceptions\ArrayTraversalException;
 
 class ArrayIndexer
 {
-    protected $container;
+    protected array $container;
 
 
     public function __construct(array $container)
@@ -40,7 +40,10 @@ class ArrayIndexer
 
         return $value;
     }
-
+    
+    /**
+     * @throws ArrayTraversalException
+     */
     public function setByDotNotation(string $path, $value): void
     {
         $steps = explode(".", $path);
@@ -54,13 +57,12 @@ class ArrayIndexer
     {
         return $this->container;
     }
-
-
-
-
-
-
-    private static function arrayPath(array &$array, array $path, &$value = null)
+    
+    
+    /**
+     * @throws ArrayTraversalException
+     */
+    private static function arrayPath(array &$array, array $path, /* & */ $value = null)
     {
         $args = func_get_args();
         $ref = &$array;

@@ -12,5 +12,5 @@ Usage:
 Options:
 
     --lt [template]
-        This specifies the 'template' for links we're generating. By default
+        This specifies the 'template' for links we're generating. By default,
         this is "%c.md".

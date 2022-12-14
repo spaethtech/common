@@ -1,11 +1,10 @@
-<?php
+<?php /** @noinspection PhpUnused */
 declare(strict_types=1);
 
 namespace SpaethTech\HTML;
 
-
-
-use SpaethTech\HTML\Indenter;
+use DOMDocument;
+use SpaethTech\HTML\Exceptions\RuntimeException;
 
 final class HTML
 {
@@ -19,12 +18,12 @@ final class HTML
     public static function minify($input) {
         if(trim($input) === "") return $input;
         // Remove extra white-space(s) between HTML attribute(s)
-        $input = preg_replace_callback('#<([^\/\s<>!]+)(?:\s+([^<>]*?)\s*|\s*)(\/?)>#s', function($matches) {
-            return '<' . $matches[1] . preg_replace('#([^\s=]+)(\=([\'"]?)(.*?)\3)?(\s+|$)#s', ' $1$2', $matches[2]) . $matches[3] . '>';
+        $input = preg_replace_callback('#<([^/\s<>!]+)(?:\s+([^<>]*?)\s*|\s*)(/?)>#', function($matches) {
+            return '<' . $matches[1] . preg_replace('#([^\s=]+)(=([\'"]?)(.*?)\3)?(\s+|$)#s', ' $1$2', $matches[2]) . $matches[3] . '>';
         }, str_replace("\r", "", $input));
         // Minify inline CSS declaration(s)
         if(strpos($input, ' style=') !== false) {
-            $input = preg_replace_callback('#<([^<]+?)\s+style=([\'"])(.*?)\2(?=[\/\s>])#s', function($matches) {
+            $input = preg_replace_callback('#<([^<]+?)\s+style=([\'"])(.*?)\2(?=[/\s>])#s', function($matches) {
                 return '<' . $matches[1] . ' style=' . $matches[2] . CSS3::minify($matches[3]) . $matches[2];
             }, $input);
         }
@@ -47,15 +46,15 @@ final class HTML
                 '#<(img|input)(>| .*?>)#s',
                 // Remove a line break and two or more white-space(s) between tag(s)
                 '#(<!--.*?-->)|(>)(?:\n*|\s{2,})(<)|^\s*|\s*$#s',
-                '#(<!--.*?-->)|(?<!\>)\s+(<\/.*?>)|(<[^\/]*?>)\s+(?!\<)#s', // t+c || o+t
-                '#(<!--.*?-->)|(<[^\/]*?>)\s+(<[^\/]*?>)|(<\/.*?>)\s+(<\/.*?>)#s', // o+o || c+c
-                '#(<!--.*?-->)|(<\/.*?>)\s+(\s)(?!\<)|(?<!\>)\s+(\s)(<[^\/]*?\/?>)|(<[^\/]*?\/?>)\s+(\s)(?!\<)#s', // c+t || t+o || o+t -- separated by long white-space(s)
-                '#(<!--.*?-->)|(<[^\/]*?>)\s+(<\/.*?>)#s', // empty tag
-                '#<(img|input)(>| .*?>)<\/\1>#s', // reset previous fix
+                '#(<!--.*?-->)|(?<!>)\s+(</.*?>)|(<[^/]*?>)\s+(?!<)#s', // t+c || o+t
+                '#(<!--.*?-->)|(<[^/]*?>)\s+(<[^/]*?>)|(</.*?>)\s+(</.*?>)#s', // o+o || c+c
+                '#(<!--.*?-->)|(</.*?>)\s+(\s)(?!<)|(?<!>)\s+(\s)(<[^/]*?/?>)|(<[^/]*?/?>)\s+(\s)(?!<)#s', // c+t || t+o || o+t -- separated by long white-space(s)
+                '#(<!--.*?-->)|(<[^/]*?>)\s+(</.*?>)#s', // empty tag
+                '#<(img|input)(>| .*?>)</\1>#s', // reset previous fix
                 '#(&nbsp;)&nbsp;(?![<\s])#', // clean up ...
-                '#(?<=\>)(&nbsp;)(?=\<)#', // --ibid
+                '#(?<=>)(&nbsp;)(?=<)#', // --ibid
                 // Remove HTML comment(s) except IE comment(s)
-                '#\s*<!--(?!\[if\s).*?-->\s*|(?<!\>)\n+(?=\<[^!])#s'
+                '#\s*<!--(?!\[if\s).*?-->\s*|(?<!>)\n+(?=<[^!])#s'
             ),
             array(
                 '<$1$2</$1>',
@@ -71,11 +70,15 @@ final class HTML
             ),
             $input);
     }
-
-
-    public static function tidyHTML($html) {
+    
+    
+    /**
+     * @throws RuntimeException
+     */
+    public static function tidyHTML($html) : string
+    {
         // load our document into a DOM object
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         // we want nice output
         $dom->preserveWhiteSpace = false;
         libxml_use_internal_errors(true);
@@ -98,7 +101,7 @@ final class HTML
     public static function beautify2(string $html): string
     {
 
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
 
         $dom->preserveWhiteSpace = false;
         $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED);
@@ -107,9 +110,7 @@ final class HTML
 
         print $dom->saveXML($dom->documentElement);
 
-
-
-
+        return $dom->saveXML($dom->documentElement);
     }
 
 
@@ -119,7 +120,7 @@ final class HTML
         function tidyHTML($buffer)
         {
             // load our document into a DOM object
-            $dom = new \DOMDocument();
+            $dom = new DOMDocument();
             // we want nice output
             $dom->preserveWhiteSpace = false;
             $dom->loadHTML($buffer);

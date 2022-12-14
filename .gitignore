@@ -1,2 +1,5 @@
+.cache/
 vendor/
-.env
+tests/.cache/
+**/.env
+composer.lock

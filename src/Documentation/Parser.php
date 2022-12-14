@@ -18,19 +18,19 @@ class Parser
      *
      * @var string
      */
-    protected $structureXmlFile;
+    protected string $structureXmlFile;
 
     /**
      * The list of classes and interfaces.
      *
      * @var array
      */
-    protected $classDefinitions;
+    protected array $classDefinitions;
 
     /**
      * @param string $structureXmlFile
      */
-    function __construct($structureXmlFile)
+    function __construct(string $structureXmlFile)
     {
         $this->structureXmlFile = $structureXmlFile;
     }
@@ -38,7 +38,7 @@ class Parser
     /**
      * Starts the process.
      */
-    function run()
+    function run(): array
     {
         $xml = simplexml_load_file($this->structureXmlFile);
 
@@ -53,7 +53,7 @@ class Parser
     }
 
     /**
-     * Gets all classes and interfaces from the file and puts them in an easy to use array.
+     * Gets all classes and interfaces from the file and puts them in an easy-to-use array.
      *
      * @param SimpleXmlElement $xml
      */
@@ -108,14 +108,14 @@ class Parser
     /**
      * Parses all the method information for a single class or interface.
      *
-     * You must pass an xml element that refers to either the class or interface element from
+     * You must pass an XML element that refers to either the class or interface element from
      * structure.xml.
      *
      * @param SimpleXMLElement $class
      *
      * @return array
      */
-    protected function parseMethods(SimpleXMLElement $class)
+    protected function parseMethods(SimpleXMLElement $class): array
     {
         $methods = [];
 
@@ -178,7 +178,7 @@ class Parser
 
             $methods[$methodName] = [
                 'name'        => $methodName,
-                'description' => (string)$method->docblock->description . "\n\n" . (string)$method->docblock->{'long-description'},
+                'description' => $method->docblock->description . "\n\n" . $method->docblock->{'long-description'},
                 'visibility'  => (string)$method['visibility'],
                 'abstract'    => ((string)$method['abstract']) == "true",
                 'static'      => ((string)$method['static']) == "true",
@@ -195,14 +195,14 @@ class Parser
     /**
      * Parses all property information for a single class or interface.
      *
-     * You must pass an xml element that refers to either the class or interface element from
+     * You must pass an XML element that refers to either the class or interface element from
      * structure.xml.
      *
      * @param SimpleXMLElement $class
      *
      * @return array
      */
-    protected function parseProperties(SimpleXMLElement $class)
+    protected function parseProperties(SimpleXMLElement $class): array
     {
         $properties = [];
 
@@ -231,7 +231,7 @@ class Parser
                 'name'        => $propName,
                 'type'        => $type,
                 'default'     => $default,
-                'description' => (string)$xProperty->docblock->description . "\n\n" . (string)$xProperty->docblock->{'long-description'},
+                'description' => $xProperty->docblock->description . "\n\n" . $xProperty->docblock->{'long-description'},
                 'visibility'  => $visibility,
                 'static'      => ((string)$xProperty['static']) == 'true',
                 'signature'   => $signature,
@@ -246,14 +246,14 @@ class Parser
     /**
      * Parses all constant information for a single class or interface.
      *
-     * You must pass an xml element that refers to either the class or interface element from
+     * You must pass an XML element that refers to either the class or interface element from
      * structure.xml.
      *
      * @param SimpleXMLElement $class
      *
      * @return array
      */
-    protected function parseConstants(SimpleXMLElement $class)
+    protected function parseConstants(SimpleXMLElement $class): array
     {
         $constants = [];
 
@@ -268,7 +268,7 @@ class Parser
 
             $constants[$name] = [
                 'name'        => $name,
-                'description' => (string)$xConstant->docblock->description . "\n\n" . (string)$xConstant->docblock->{'long-description'},
+                'description' => $xConstant->docblock->description . "\n\n" . $xConstant->docblock->{'long-description'},
                 'signature'   => $signature,
                 'value'       => $value,
                 'deprecated'  => count($class->xpath('docblock/tag[@name="deprecated"]')) > 0,
@@ -287,7 +287,7 @@ class Parser
      *
      * @return array
      */
-    protected function expandMethods($className)
+    protected function expandMethods(string $className): array
     {
         $class = $this->classDefinitions[$className];
 
@@ -323,7 +323,7 @@ class Parser
      *
      * @return array
      */
-    protected function expandProperties($className)
+    protected function expandProperties(string $className): array
     {
         $class = $this->classDefinitions[$className];
 

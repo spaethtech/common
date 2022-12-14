@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUnused */
+declare(strict_types=1);
 
 namespace SpaethTech\Documentation;
 
@@ -21,35 +22,35 @@ class Generator
      *
      * @var string
      */
-    protected $outputDir;
+    protected string $outputDir;
 
     /**
      * The list of classes and interfaces.
      *
      * @var array
      */
-    protected $classDefinitions;
+    protected array $classDefinitions;
 
     /**
      * Directory containing the twig templates.
      *
      * @var string
      */
-    protected $templateDir;
+    protected string $templateDir;
 
     /**
      * A simple template for generating links.
      *
      * @var string
      */
-    protected $linkTemplate;
+    protected string $linkTemplate;
 
     /**
      * Filename for API Index.
      *
      * @var string
      */
-    protected $apiIndexFile;
+    protected string $apiIndexFile;
 
     /**
      * @param array  $classDefinitions
@@ -58,7 +59,7 @@ class Generator
      * @param string $linkTemplate
      * @param string $apiIndexFile
      */
-    function __construct(array $classDefinitions, $outputDir, $templateDir, $linkTemplate = '%c.md', $apiIndexFile = 'ApiIndex.md')
+    function __construct(array $classDefinitions, string $outputDir, string $templateDir, string $linkTemplate = '%c.md', string $apiIndexFile = 'ApiIndex.md')
     {
         $this->classDefinitions = $classDefinitions;
         $this->outputDir = $outputDir;
@@ -90,15 +91,19 @@ class Generator
 
         $filter = new Twig_SimpleFilter('classLink', ['rspaeth\\Documentation\\Generator', 'classLink']);
         $twig->addFilter($filter);
-
+    
+    
+        /** @noinspection PhpUnusedLocalVariableInspection */
         foreach ($this->classDefinitions as $className => $data) {
+            /** @noinspection PhpUnhandledExceptionInspection */
             $output = $twig->render('class.twig', $data);
 
             file_put_contents($this->outputDir . '/' . $data['fileName'], $output);
         }
 
         $index = $this->createIndex();
-
+    
+        /** @noinspection PhpUnhandledExceptionInspection */
         $index = $twig->render('index.twig',
             [
                 'index'            => $index,
@@ -115,9 +120,9 @@ class Generator
      * I'm generating the actual markdown output here, which isn't great...But it will have to do.
      * If I don't want to make things too complicated.
      *
-     * @return array
+     *
      */
-    protected function createIndex()
+    protected function createIndex(): string
     {
         $tree = [];
 
@@ -173,7 +178,7 @@ class Generator
      *
      * @return string
      */
-    static function classLink($className, $label = null)
+    static function classLink(string $className, ?string $label = null): string
     {
         $classDefinitions = $GLOBALS['SpaethTech_Documentation_classDefinitions'];
         $linkTemplate = $GLOBALS['SpaethTech_Documentation_linkTemplate'];

@@ -1,10 +1,7 @@
-<?php
+<?php /** @noinspection PhpUnused */
 declare(strict_types=1);
 
 namespace SpaethTech\HTML;
-
-
-
 
 /**
  * @link https://github.com/gajus/dindent for the canonical source repository
@@ -12,13 +9,13 @@ namespace SpaethTech\HTML;
  */
 class Indenter {
     private
-        $log = array(),
-        $options = array(
+        array $log = [],
+        $options = [
         'indentation_character' => '    '
-    ),
-        $inline_elements = array('b', 'big', 'i', 'small', 'tt', 'abbr', 'acronym', 'cite', 'code', 'dfn', 'em', 'kbd', 'strong', 'samp', 'var', 'a', 'bdo', 'br', 'img', 'span', 'sub', 'sup'),
-        $temporary_replacements_script = array(),
-        $temporary_replacements_inline = array();
+    ],
+        $inline_elements = ['b', 'big', 'i', 'small', 'tt', 'abbr', 'acronym', 'cite', 'code', 'dfn', 'em', 'kbd', 'strong', 'samp', 'var', 'a', 'bdo', 'br', 'img', 'span', 'sub', 'sup'],
+        $temporary_replacements_script = [],
+        $temporary_replacements_inline = [];
     const ELEMENT_TYPE_BLOCK = 0;
     const ELEMENT_TYPE_INLINE = 1;
     const MATCH_INDENT_NO = 0;
@@ -42,10 +39,9 @@ class Indenter {
     /**
      * @param string $element_name Element name, e.g. "b".
      * @param int $type
-     * @return null
      * @throws Exceptions\InvalidArgumentException
      */
-    public function setElementType ($element_name, $type) {
+    public function setElementType (string $element_name, int $type) {
         if ($type === static::ELEMENT_TYPE_BLOCK) {
             $this->inline_elements = array_diff($this->inline_elements, array($element_name));
         } else if ($type === static::ELEMENT_TYPE_INLINE) {
@@ -61,9 +57,9 @@ class Indenter {
      * @return string Indented HTML.
      * @throws Exceptions\RuntimeException
      */
-    public function indent ($input) {
+    public function indent (string $input): string {
         $this->log = array();
-// Dindent does not indent <script> body. Instead, it temporary removes it from the code, indents the input, and restores the script body.
+// indent does not indent <script> body. Instead, it temporarily removes it from the code, indents the input, and restores the script body.
         if (preg_match_all('/<script\b[^>]*>([\s\S]*?)<\/script>/mi', $input, $matches)) {
             $this->temporary_replacements_script = $matches[0];
             foreach ($matches[0] as $i => $match) {
@@ -71,12 +67,12 @@ class Indenter {
             }
         }
 // Removing double whitespaces to make the source code easier to read.
-// With exception of <pre>/ CSS white-space changing the default behaviour, double whitespace is meaningless in HTML output.
-        // This reason alone is sufficient not to use Dindent in production.
+// Except when using <pre>/ CSS white-space changing the default behaviour, double whitespace is meaningless in HTML output.
+        // This reason alone is sufficient not to use indent in production.
         $input = str_replace("\t", '', $input);
         $input = preg_replace('/\s{2,}/u', ' ', $input);
         // Remove inline elements and replace them with text entities.
-        if (preg_match_all('/<(' . implode('|', $this->inline_elements) . ')[^>]*>(?:[^<]*)<\/\1>/', $input, $matches)) {
+        if (preg_match_all('/<(' . implode('|', $this->inline_elements) . ')[^>]*>[^<]*<\/\1>/', $input, $matches)) {
             $this->temporary_replacements_inline = $matches[0];
             foreach ($matches[0] as $i => $match) {
                 $input = str_replace($match, 'ᐃ' . ($i + 1) . 'ᐃ', $input);
@@ -85,6 +81,7 @@ class Indenter {
         $subject = $input;
         $output = '';
         $next_line_indentation_level = 0;
+        $match = null;
         do {
             $indentation_level = $next_line_indentation_level;
             $patterns = array(
@@ -120,13 +117,27 @@ class Indenter {
                     if ($rule === static::MATCH_DISCARD) {
                         break;
                     }
-                    if ($rule === static::MATCH_INDENT_NO) {
-                    } else if ($rule === static::MATCH_INDENT_DECREASE) {
-                        $next_line_indentation_level--;
-                        $indentation_level--;
-                    } else {
-                        $next_line_indentation_level++;
+                    
+                    switch($rule)
+                    {
+                        case static::MATCH_INDENT_NO:
+                            break;
+                        case static::MATCH_INDENT_DECREASE:
+                            $next_line_indentation_level--;
+                            $indentation_level--;
+                            break;
+                        default:
+                            $next_line_indentation_level++;
+                            break;
                     }
+                    
+//                    if ($rule === static::MATCH_INDENT_NO) {
+//                    } else if ($rule === static::MATCH_INDENT_DECREASE) {
+//                        $next_line_indentation_level--;
+//                        $indentation_level--;
+//                    } else {
+//                        $next_line_indentation_level++;
+//                    }
                     if ($indentation_level < 0) {
                         $indentation_level = 0;
                     }
@@ -156,7 +167,7 @@ class Indenter {
      *
      * @return array
      */
-    public function getLog () {
+    public function getLog (): array {
         return $this->log;
     }
 }

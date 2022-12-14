@@ -17,13 +17,17 @@ use ParseError;
 final class Patterns
 {
     
-    private const PATTERN_JSON    = "/(\{.*\})/";
-    private const PATTERN_ARRAY   = "/(\[.*\])/";
+    //private const PATTERN_JSON    = "/(\{.*\})/";
+    private const PATTERN_JSON    = "/(\{.*})/";
+    
+    //private const PATTERN_ARRAY   = "/(\[.*\])/";
+    private const PATTERN_ARRAY   = "/(\[.*])/";
+    
     //private const PATTERN_EVAL    = "/(\`.*\`)/";
     
     
     /**
-     * Checks to see whether or not the provided string value is a JSON literal and optionally mutates the literal value
+     * Checks to see whether the provided string value is a JSON literal and optionally mutates the literal value
      * to an associative array from the decoded JSON.
      *
      * @param string|null $value The string to validate as JSON.  When mutated, this value becomes an associative array.
@@ -53,7 +57,7 @@ final class Patterns
     }
     
     /**
-     * Checks to see whether or not the provided string value is a PHP array literal and optionally mutates the literal
+     * Checks to see whether the provided string value is a PHP array literal and optionally mutates the literal
      * value to an actual array.
      *
      * Examples:<br>
@@ -74,7 +78,7 @@ final class Patterns
         {
             try
             {
-                $array = eval("return {$value};");
+                $array = eval("return $value;");
                 
             }
             catch(Exception|ParseError $e)
@@ -105,7 +109,7 @@ final class Patterns
     public static function interpolateUrl(string $pattern, array $params, string $token = ":"): string
     {
         
-        if ($pattern === null || $pattern === "")
+        if (/* $pattern === null || */ $pattern === "")
             return "";
         
         if ($token === null || $token === "")
